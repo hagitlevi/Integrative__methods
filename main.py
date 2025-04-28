@@ -57,7 +57,7 @@ def fix(matrix, b):
 
         # Swap rows in the matrix and the vector if necessary
         if max_row != i:
-            matrix[[i, max_row]] = matrix[[max_row, i]]
+            custom_swap_rows(matrix, i, max_row)
             b[i], b[max_row] = b[max_row], b[i]
 
         # Check if the diagonal element is dominant
