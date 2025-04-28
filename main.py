@@ -1,33 +1,39 @@
-import numpy as np
 from math import pi
-from numpy.linalg import norm
 
 def is_diagonally_dominant(mat):
+    """
+    Checks if a matrix is diagonally dominant.
+    :param mat: A 2D list representing the matrix.
+    :return: True if the matrix is diagonally dominant, False otherwise.
+    """
     if mat is None:
         return False
 
-    d = np.diag(np.abs(mat))  # Find diagonal coefficients
-    s = np.sum(np.abs(mat), axis=1) - d  # Find row sum without diagonal
-    return np.all(d > s)
+    for i in range(len(mat)):
+        diagonal_element = abs(mat[i][i])
+        row_sum = sum(abs(mat[i][j]) for j in range(len(mat[i])) if j != i)
+        if diagonal_element <= row_sum:
+            return False
+
+    return True
 
 def partial_pivoting_with_vector(A, b):
     """
     Performs partial pivoting on matrix A and vector b.
-
-    :param A: 2D numpy array (matrix)
-    :param b: 1D numpy array (vector)
+    :param A: 2D list (matrix)
+    :param b: 1D list (vector)
     :return: Tuple of (A, b) after pivoting
     """
     n = len(A)
     for i in range(n):
         # Find the pivot row with the largest absolute value in the current column
-        pivot_row = i + np.argmax(np.abs(A[i:, i]))
+        pivot_row = i + max(range(len(A[i:])), key=lambda x: abs(A[i + x][i]))
 
         # Swap rows in A
         if pivot_row != i:
-            A[[i, pivot_row]] = A[[pivot_row, i]]
+            custom_swap_rows(A, i, pivot_row)
             # Swap corresponding elements in b
-            b[[i, pivot_row]] = b[[pivot_row, i]]
+            b[i], b[pivot_row] = b[pivot_row], b[i]
 
     return A, b
 
@@ -39,8 +45,8 @@ def fix(matrix, b):
     :return: A tuple containing the diagonally dominant matrix and the modified vector
     """
     n = len(matrix)
-    matrix = np.array(matrix, dtype=np.float64)
-    b = np.array(b, dtype=np.float64)
+    matrix = custom_array(matrix, dtype=float)
+    b = custom_array(b, dtype=float)
 
     for i in range(n):
         # Find the row with the largest absolute value in column i
@@ -69,7 +75,7 @@ def gauss_seidel(A, b, X0, TOL=0.00001, N=200):
 
     print( "Iteration" + "\t\t\t".join([" {:>12}".format(var) for var in ["x{}".format(i) for i in range(1, len(A) + 1)]]))
     print("-----------------------------------------------------------------------------------------------")
-    x = np.zeros(n, dtype=np.double)
+    x = [0.0 for _ in range(n)]
     while k <= N:
 
         for i in range(n):
@@ -83,7 +89,8 @@ def gauss_seidel(A, b, X0, TOL=0.00001, N=200):
 
         print("{:<15} ".format(k) + "\t\t".join(["{:<15} ".format(val) for val in x]))
 
-        if norm(x - X0, np.inf) < TOL:
+        max_diff = max(abs(x[i] - X0[i]) for i in range(n))
+        if max_diff < TOL:
             return tuple(x)
 
         k += 1
@@ -103,7 +110,7 @@ def jacobi_iterative(A, b, X0, TOL=0.00001, N=200):
     print("-----------------------------------------------------------------------------------------------")
 
     while k <= N:
-        x = np.zeros(n, dtype=np.double)
+        x = [0.0 for _ in range(n)]
         for i in range(n):
             sigma = 0
             for j in range(n):
@@ -115,7 +122,8 @@ def jacobi_iterative(A, b, X0, TOL=0.00001, N=200):
 
         print("{:<15} ".format(k) + "\t\t".join(["{:<15} ".format(val) for val in x]))
 
-        if norm(x - X0, np.inf) < TOL:
+        max_diff = max(abs(x[i] - X0[i]) for i in range(n))
+        if max_diff < TOL:
             return tuple(x)
 
         k += 1
@@ -124,15 +132,39 @@ def jacobi_iterative(A, b, X0, TOL=0.00001, N=200):
     print("Maximum number of iterations exceeded")
     return tuple(pi, pi, pi)
 
+def custom_array(data, dtype=float):
+    """
+    Custom implementation of an array-like function to replace np.array.
 
+    :param data: Input data (list, tuple, etc.)
+    :param dtype: Desired data type (default is float)
+    :return: A nested list structure mimicking an array
+    """
+    def convert(value):
+        try:
+            return dtype(value)
+        except ValueError:
+            raise TypeError(f"Cannot convert {value} to {dtype}")
 
+    if isinstance(data, (list, tuple)):
+        return [custom_array(item, dtype) if isinstance(item, (list, tuple)) else convert(item) for item in data]
+    else:
+        return convert(data)
 
+def custom_swap_rows(matrix, row1, row2):
+    """
+    Swaps two rows in a nested list structure.
+    :param matrix: Nested list representing the matrix.
+    :param row1: Index of the first row.
+    :param row2: Index of the second row.
+    """
+    matrix[row1], matrix[row2] = matrix[row2], matrix[row1]
 
 if __name__ == '__main__':
 
-    matrixA = np.array([[4, 2, 0], [2, 10, 4], [0, 4, 5]])
-    vectorB = np.array([2, 6, 5])
-    X0 = np.zeros_like(vectorB)
+    matrixA = custom_array([[4, 2, 0], [2, 10, 4], [0, 4, 5]])
+    vectorB = custom_array([2, 6, 5])
+    X0 = [0.0] * len(matrixA)
     if not is_diagonally_dominant(matrixA):
         try:
             matrixA, vectorB = fix(matrixA, vectorB)
