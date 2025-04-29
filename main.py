@@ -97,7 +97,7 @@ def gauss_seidel(A, b, X0, TOL=0.00001, N=200):
         X0 = x.copy()
 
     print("Maximum number of iterations exceeded")
-    return tuple(pi, pi, pi)
+    return (pi, pi, pi)
 
 def jacobi_iterative(A, b, X0, TOL=0.00001, N=200):
     n = len(A)
@@ -130,7 +130,7 @@ def jacobi_iterative(A, b, X0, TOL=0.00001, N=200):
         X0 = x.copy()
 
     print("Maximum number of iterations exceeded")
-    return tuple(pi, pi, pi)
+    return (pi, pi, pi)
 
 def custom_array(data, dtype=float):
     """
