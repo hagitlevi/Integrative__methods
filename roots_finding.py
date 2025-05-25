@@ -8,6 +8,8 @@ while True:
     if inp == 1:
         section_start = int(input("Enter the start of the section: "))
         section_end = int(input("Enter the end of the section: "))
+        if function(section_start) * function(section_end) >= 0:
+            raise ValueError("The scalars a and b do not bound a root. Please choose a different interval.")
         newtonRaphson.find_roots_in_section(function, section_start, section_end)
         break
     elif inp == 2:

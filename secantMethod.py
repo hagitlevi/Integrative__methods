@@ -8,6 +8,8 @@ def secant_method(func, x0, x1, tol=1e-6, max_iter=100):
     - Handles invalid function evaluations
     - Adds additional convergence criteria
     """
+    if func(x1) * func(x0) >= 0:
+        raise ValueError("The scalars a and b do not bound a root. Please choose a different interval.")
     # Print the header for the iteration table
     print(f"{'Iter':<6}{'x0':<15}{'x1':<15}{'f(x1)':<15}{'Δx':<15}")
 
