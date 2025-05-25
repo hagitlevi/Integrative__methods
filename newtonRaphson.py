@@ -1,5 +1,4 @@
 from colors import bcolors
-import math
 
 def isclose(a, b, rel_tol=1e-05, abs_tol=1e-08):
     """
@@ -38,7 +37,7 @@ def newton_raphson(f, df, p0, tol=1e-6, max_iter=50):
 
 def find_roots_in_section(f, section_start, section_end, tol=1e-6, max_iter=50):
     """
-    Find roots of a function in a given section by dividing it into sub-sections of size 0.1.
+    Find roots of a function in a given section by dividing it into subsections of size 0.1.
     """
     step = 0.1
     current_start = section_start
