@@ -15,7 +15,7 @@ def linearInterpolation(table_points, point):
         # Handle interpolation, including the boundary case for the last point
         if x1 <= point <= x2 or (i == len(table_points) - 2 and point == x2):
             result = y1 + ((y2 - y1) / (x2 - x1)) * (point - x1)
-            print(bcolors.OKGREEN, f"\nThe approximation (interpolation) of the point {point} is: ", bcolors.ENDC, round(result, 4))
+            #print(bcolors.OKGREEN, f"\nThe approximation (interpolation) of the point {point} is: ", bcolors.ENDC, round(result, 4))
             return result
 
     # Extrapolation

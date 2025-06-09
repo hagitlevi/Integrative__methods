@@ -46,8 +46,6 @@ def cubicSplineInterpolation(xList, yList, point):
             # Step 4: Evaluate the cubic spline at the point
             dx = point - xList[i]
             result = yList[i] + b[i] * dx + c[i] * dx ** 2 + d[i] * dx ** 3
-            print(bcolors.OKGREEN, f"\nThe approximation of the point {point} using cubic spline interpolation is: ",
-                  bcolors.ENDC, f"{result:.4f}")
             return result
 
     raise ValueError(f"Point {point} is out of interpolation range [{xList[0]}, {xList[-1]}].")
